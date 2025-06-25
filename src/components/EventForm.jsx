@@ -42,13 +42,17 @@ const EventForm = ({ date, onAdd, onClose }) => {
             onChange={e => setTime(e.target.value)}
             required
           />
-          <input
-            type="text"
-            placeholder="Duration (e.g. 1h, 30m)"
+          <select
             value={duration}
             onChange={e => setDuration(e.target.value)}
             required
-          />
+          >
+            <option value="">Select duration</option>
+            <option value="10m">10 minutes</option>
+            <option value="30m">30 minutes</option>
+            <option value="1h">1 hour</option>
+            <option value="2h">2 hours</option>
+          </select>
           <textarea
             placeholder="Description"
             value={description}

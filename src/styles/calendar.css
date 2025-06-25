@@ -56,7 +56,7 @@ html, body, #root {
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(80,120,200,0.08);
   padding: 2rem;
-  margin: 2rem auto;
+  margin: 1rem auto;  /* Changed from 2rem to 4rem */
   max-width: 900px;   /* Increased from 520px */
   border: 1px solid #b6d0ff;
 }
@@ -174,12 +174,29 @@ html, body, #root {
   min-width: 300px;
 }
 .event-form-content input,
+.event-form-content select,
 .event-form-content textarea {
+  display: block;
   width: 100%;
-  margin-bottom: 0.7rem;
-  padding: 0.5rem;
-  border-radius: 5px;
-  border: 1px solid #d1d5db;
+  margin-bottom: 1rem;
+  padding: 0.7rem 1rem;
+  border: 1.5px solid #b6d0ff;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f8fbff;
+  box-sizing: border-box;
+  transition: border 0.2s;
+}
+.event-form-content input:focus,
+.event-form-content select:focus,
+.event-form-content textarea:focus {
+  border: 1.5px solid #2563eb;
+  outline: none;
+}
+.event-form-select {
+  /* Optional: extra style for select */
+  background: #f0f6ff;
+  color: #222;
 }
 .event-form-content button {
   background: #6366f1;
@@ -229,17 +246,24 @@ html, body, #root {
   box-sizing: border-box;
 }
 
+.calendar-layout h1 {
+  margin-top: 0;
+  margin-bottom: 1rem; /* or adjust as needed */
+  padding: 0;
+}
+
 .calendar {
   flex: 1 1 0;
   min-width: 0;
   max-width: 900px;
   box-sizing: border-box;
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .event-summary {
-  position: sticky;
-  top: 2rem;
-  align-self: flex-start;
+  position: relative;      /* Change from sticky to relative */
+  margin-top: 0;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(80,120,200,0.08);
@@ -247,12 +271,11 @@ html, body, #root {
   padding: 1.5rem;
   min-width: 260px;
   max-width: 320px;
-  width: 100%;
+  width: 320px;
   box-sizing: border-box;
   font-family: 'Segoe UI', Arial, sans-serif;
   font-size: 1rem;
   color: #222;
-  margin-top: 10rem;
   max-height: 420px;
   overflow-y: auto;
 }
@@ -273,7 +296,7 @@ html, body, #root {
 }
 
 .event-summary li {
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.0rem;
   font-size: 1rem;
   border-bottom: 1px solid #e3edff;
   padding-bottom: 0.7rem;
@@ -329,4 +352,39 @@ html, body, #root {
 /* Optional: Prevent vertical scroll except for the main page */
 body {
   overflow-y: auto;
+}
+
+/* Toast notification styles */
+.toast-error {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  border-radius: 10px;
+  padding: 1rem 2.5rem 1rem 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  z-index: 9999;
+  box-shadow: 0 4px 24px rgba(80,120,200,0.18);
+  min-width: 220px;
+  max-width: 350px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  animation: fadeIn 0.3s;
+}
+.toast-error button {
+  background: transparent;
+  border: none;
+  color: #b91c1c;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-left: auto;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px);}
+  to { opacity: 1; transform: translateY(0);}
 }

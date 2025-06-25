@@ -121,8 +121,6 @@ const Calendar = ({ events, selectedDate, setSelectedDate, openForm }) => {
             <div
               key={i}
               className={`day-unique ${date.isSame(today, 'day') ? 'today-unique' : ''}`}
-              title="Double-click to add event"
-              onClick={() => setSelectedDate(date)}
             >
               <button
                 className="add-event-btn"

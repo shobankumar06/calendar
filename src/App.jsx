@@ -6,12 +6,24 @@ import EventList from './components/EventList';
 import EventSummary from './components/EventSummary';
 
 
+// Helper to get event end time
+function getEventEnd(event) {
+  const start = dayjs(`${event.date}T${event.time}`);
+  if (event.duration.endsWith('h')) {
+    return start.add(parseInt(event.duration), 'hour');
+  } else if (event.duration.endsWith('m')) {
+    return start.add(parseInt(event.duration), 'minute');
+  }
+  return start;
+}
+
+
 function App() {
   const [events, setEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [showForm, setShowForm] = useState(false);
   const [formDate, setFormDate] = useState('');
-  const [error, setError] = useState(''); // <-- Add this
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetch('/Event.json')
@@ -20,61 +32,51 @@ function App() {
       .catch(err => console.error('Failed to load events:', err));
   }, []);
 
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(''), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   const addEvent = (event) => {
     // Check for overlap (same date and time)
     const overlap = events.some(
       e => e.date === event.date && e.time === event.time
     );
     if (overlap) {
-      setError('An event already exists at this date and time!');
-      return;
+      setError('Warning: An event already exists at this date and time!');
     }
     setEvents((prevEvents) => [...prevEvents, event]);
-    setError(''); // Clear error on successful add
+  };
+
+  const deleteEvent = (eventToDelete) => {
+    setEvents(events =>
+      events.filter(
+        event =>
+          !(
+            event.date === eventToDelete.date &&
+            event.time === eventToDelete.time &&
+            event.title === eventToDelete.title
+          )
+      )
+    );
   };
 
   const openForm = (dateStr) => {
     setFormDate(dateStr);
     setShowForm(true);
-    setError(''); // Clear error when opening form
+    setError('');
   };
 
-  const eventsForSelectedDate = selectedDate
-    ? events.filter(event => event.date === selectedDate.format('YYYY-MM-DD'))
-    : [];
+  // Only keep events that have not ended yet
+  const now = dayjs();
+  const activeEvents = events.filter(event => getEventEnd(event).isAfter(now));
 
   return (
     <div className="calendar-layout">
       <div style={{ flex: 1 }}>
-        <h1>Event Calendar</h1>
-        {error && (
-          <div style={{
-            background: '#fee2e2',
-            color: '#b91c1c',
-            border: '1px solid #fca5a5',
-            borderRadius: '8px',
-            padding: '0.5rem 1rem',
-            marginBottom: '1rem',
-            position: 'relative'
-          }}>
-            <button
-              onClick={() => setError('')}
-              style={{
-                position: 'absolute',
-                top: '6px',
-                right: '10px',
-                background: 'transparent',
-                border: 'none',
-                color: '#b91c1c',
-                fontSize: '1.2rem',
-                cursor: 'pointer',
-                lineHeight: 1
-              }}
-              aria-label="Close error"
-            >×</button>
-            {error}
-          </div>
-        )}
+        <h1 style={{ margin: 0, padding: 0 }}>Event Calendar</h1>
         <Calendar
           events={events}
           selectedDate={selectedDate}
@@ -89,7 +91,15 @@ function App() {
           />
         )}
       </div>
-      <EventSummary events={events} />
+      <div style={{ width: 320, minWidth: 260, maxWidth: 320, position: 'relative', minHeight: 100 }}>
+        {error && (
+          <div className="toast-error">
+            <span>{error}</span>
+            <button onClick={() => setError('')} aria-label="Close error">×</button>
+          </div>
+        )}
+        <EventSummary events={events} onDelete={deleteEvent} />
+      </div>
     </div>
   );
 }
