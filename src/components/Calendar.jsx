@@ -67,11 +67,6 @@ const Calendar = ({ events, selectedDate, setSelectedDate, openForm }) => {
           aria-label="Pick month and year"
         >
           {selectedDate.format('MMMM YYYY')}
-          {showTooltip && (
-            <div className="calendar-tooltip">
-              Click to pick a custom date
-            </div>
-          )}
         </button>
         <button className="nav-btn" onClick={nextMonth}>&gt;</button>
         {showPicker && (
